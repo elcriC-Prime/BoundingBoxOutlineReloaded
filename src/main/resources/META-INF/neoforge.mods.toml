@@ -1,0 +1,29 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "bbor"
+version = "${version}"
+displayName = "BoundingBoxOutlineReloaded"
+authors = "Irtimaled"
+description = '''
+Shows the bounding boxes of structures and features for Minecraft 1.21.1 NeoForge.
+'''
+
+[[dependencies.bbor]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.bbor]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[mixins]]
+config = "bbor.mixins.json"

@@ -1,0 +1,47 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "target": "@env(DEFAULT)",
+  "package": "com.irtimaled.bbor.mixin",
+  "mixins": [
+    "access.IBeaconBlockEntity",
+    "access.IBiome",
+    "access.IServerCommonNetworkHandler",
+    "access.IStructureStart",
+    "server.MixinDynamicRegistryManager",
+    "server.MixinMinecraftServer",
+    "server.MixinServerChunkLoadingManager",
+    "server.management.MixinPlayerList",
+    "world.chunk.MixinPalettedContainer"
+  ],
+  "client": [
+    "access.IKeyBinding",
+    "client.MixinKeyboard",
+    "client.MixinMinecraft",
+    "client.access.IClientChunkManager",
+    "client.access.IClientChunkManagerClientChunkMap",
+    "client.access.IConduitBlockEntity",
+    "client.gui.screen.MixinChatScreen",
+    "client.network.common.MixinClientCommonNetworkHandler",
+    "client.network.login.MixinClientLoginNetHandler",
+    "client.network.play.MixinClientPlayNetHandler",
+    "client.renderer.MixinDebugHud",
+    "client.renderer.MixinGameRenderer",
+    "client.settings.MixinKeyBinding",
+    "client.world.MixinClientPlayNetworkHandler",
+    "client.world.MixinClientWorld",
+    "client.world.MixinMinecraftClient",
+    "client.world.MixinWorldChunk",
+    "client.world.extras.MixinBeaconBlockEntity",
+    "client.world.extras.MixinConduitBlockEntity",
+    "client.world.extras.MixinWorldRenderer",
+    "network.common.s2c.MixinSChatPacket",
+    "network.common.s2c.MixinSChunkDataPacket",
+    "network.common.s2c.MixinSCommandListPacket",
+    "network.common.s2c.MixinSSpawnPositionPacket"
+  ],
+  "server": [
+    "server.dedicated.MixinDedicatedServer"
+  ]
+}

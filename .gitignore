@@ -1,0 +1,34 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Gradle & Build files
+.gradle/
+build/
+out/
+classes/
+bin/
+lib/
+*.class
+
+# Minecraft / Loom run directories & logs
+run*/
+logs/
+*.log
+*.hprof
+hs_err_pid*
+
+# IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Redundant duplicate directory
+BoundingBoxOutlineReloaded-*/
