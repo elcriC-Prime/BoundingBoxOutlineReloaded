@@ -9,7 +9,6 @@ package com.irtimaled.bbor.common.messages.protocols;
 
 import com.irtimaled.bbor.common.BBORCustomPayload;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.listener.PacketListener;
@@ -18,8 +17,6 @@ import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
@@ -38,11 +35,6 @@ public class PacketSplitter {
 
     public static void send(ServerPlayNetworkHandler networkHandler, Identifier channel, PacketByteBuf packet) {
         send(packet, MAX_PAYLOAD_PER_PACKET_S2C, buf -> networkHandler.send(new CustomPayloadS2CPacket(new BBORCustomPayload(channel, buf))));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void send(ClientPlayNetworkHandler networkHandler, Identifier channel, PacketByteBuf packet) {
-        send(packet, MAX_PAYLOAD_PER_PACKET_C2S, buf -> networkHandler.send(new CustomPayloadC2SPacket(new BBORCustomPayload(channel, buf))));
     }
 
     public static void send(PacketByteBuf packet, int payloadLimit, Consumer<PacketByteBuf> sender) {

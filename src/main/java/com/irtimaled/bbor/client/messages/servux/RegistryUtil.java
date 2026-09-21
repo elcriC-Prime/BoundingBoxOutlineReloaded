@@ -1,4 +1,4 @@
-package com.irtimaled.bbor.common.messages.servux;
+package com.irtimaled.bbor.client.messages.servux;
 
 import net.minecraft.client.world.GeneratorOptionsHolder;
 import net.minecraft.registry.CombinedDynamicRegistries;

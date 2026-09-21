@@ -9,7 +9,7 @@ import com.irtimaled.bbor.common.messages.PayloadReader;
 import com.irtimaled.bbor.common.messages.StructureListSync;
 import com.irtimaled.bbor.common.messages.SubscribeToServer;
 import com.irtimaled.bbor.common.messages.protocols.PacketSplitter;
-import com.irtimaled.bbor.common.messages.servux.ServuxStructurePackets;
+import com.irtimaled.bbor.client.messages.servux.ServuxStructurePackets;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;

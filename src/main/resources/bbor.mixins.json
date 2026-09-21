@@ -12,8 +12,7 @@
     "server.MixinDynamicRegistryManager",
     "server.MixinMinecraftServer",
     "server.MixinServerChunkLoadingManager",
-    "server.management.MixinPlayerList",
-    "world.chunk.MixinPalettedContainer"
+    "server.management.MixinPlayerList"
   ],
   "client": [
     "access.IKeyBinding",

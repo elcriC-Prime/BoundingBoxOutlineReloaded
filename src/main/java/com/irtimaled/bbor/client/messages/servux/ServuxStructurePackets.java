@@ -1,14 +1,12 @@
-package com.irtimaled.bbor.common.messages.servux;
+package com.irtimaled.bbor.client.messages.servux;
 
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.neoforged.neoforge.network.payload.MinecraftRegisterPayload;
 
-import com.google.common.base.Charsets;
 import com.irtimaled.bbor.client.events.AddBoundingBoxReceived;
 import com.irtimaled.bbor.common.BoundingBoxCache;
 import com.irtimaled.bbor.common.BoundingBoxType;
 import com.irtimaled.bbor.common.EventBus;
-import com.irtimaled.bbor.common.messages.PayloadBuilder;
 import com.irtimaled.bbor.common.messages.PayloadReader;
 import com.irtimaled.bbor.common.messages.StructureUtil;
 import com.irtimaled.bbor.common.models.AbstractBoundingBox;
@@ -128,7 +126,6 @@ public class ServuxStructurePackets {
         }
 
         final BoundingBoxType boundingBoxType = StructureUtil.registerStructureIfNeeded(structureId);
-//        System.out.println("Received %s from servux".formatted(structureId));
 
         Set<AbstractBoundingBox> boundingBoxes = new HashSet<>();
         BlockBox outerBox = null;
