@@ -113,7 +113,12 @@ public class SettingsScreen extends ListScreen {
     private CreateControl[] generateStructureControls() {
         return StructureProcessor.supportedStructureIds
                 .stream()
-                .map(key -> (CreateControl) (width -> new BoundingBoxTypeButton(width, I18n.translate("bbor.structures." + key.replaceAll(":", ".")), BoundingBoxType.getByNameHash(("structure:" + key).hashCode()))))
+                .sorted()
+                .map(key -> (CreateControl) (width -> {
+                    String translationKey = "bbor.structures." + key.replaceAll(":", ".");
+                    String label = I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : key;
+                    return new BoundingBoxTypeButton(width, label, BoundingBoxType.getByNameHash(("structure:" + key).hashCode()));
+                }))
                 .distinct()
                 .toArray(CreateControl[]::new);
     }
