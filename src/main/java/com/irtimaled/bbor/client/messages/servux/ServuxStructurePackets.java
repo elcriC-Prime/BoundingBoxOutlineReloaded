@@ -24,8 +24,11 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
@@ -107,8 +110,11 @@ public class ServuxStructurePackets {
             final Optional<Registry<Structure>> networkStructures = world.getRegistryManager().getOptional(RegistryKeys.STRUCTURE);
             if (networkStructures.isPresent()) structure = networkStructures.get().getOrEmpty(Identifier.tryParse(structureId)).orElse(null);
             if (structure == null) {
-                final Optional<? extends Registry<Structure>> dynamicStructures = RegistryUtil.REGISTRY_MANAGER.getOptional(RegistryKeys.STRUCTURE);
-                if (dynamicStructures.isPresent()) structure = dynamicStructures.get().getOrEmpty(Identifier.tryParse(structureId)).orElse(null);
+                structure = BuiltinRegistries.createWrapperLookup()
+                        .getOptionalWrapper(RegistryKeys.STRUCTURE)
+                        .flatMap(w -> w.getOptional(RegistryKey.of(RegistryKeys.STRUCTURE, Identifier.tryParse(structureId))))
+                        .map(RegistryEntry::value)
+                        .orElse(null);
             }
         } catch (Throwable t) {
             t.printStackTrace(System.err);

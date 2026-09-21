@@ -18,7 +18,6 @@ import com.irtimaled.bbor.common.BoundingBoxCache;
 import com.irtimaled.bbor.common.CommonProxy;
 import com.irtimaled.bbor.common.EventBus;
 import com.irtimaled.bbor.common.interop.CommonInterop;
-import com.irtimaled.bbor.client.messages.servux.RegistryUtil;
 import com.irtimaled.bbor.client.messages.servux.ServuxStructurePackets;
 import com.irtimaled.bbor.common.models.DimensionId;
 import com.irtimaled.bbor.mixin.access.IKeyBinding;
@@ -120,9 +119,6 @@ public class ClientProxy extends CommonProxy {
         TaskThread.init();
         registerKeyBindings();
 
-        System.out.println("BBOR Dynamic Registry loading");
-        RegistryUtil.init();
-        System.out.println("BBOR Dynamic Registry loaded");
     }
 
     private void disconnectedFromServer() {
