@@ -51,9 +51,9 @@ public class PayloadReader {
     }
 
     public Coords readCoords() {
-        int x = readVarInt();
-        int y = readVarInt();
-        int z = readVarInt();
+        int x = readInt();
+        int y = readInt();
+        int z = readInt();
         return new Coords(x, y, z);
     }
 

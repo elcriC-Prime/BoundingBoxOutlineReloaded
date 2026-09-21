@@ -14,11 +14,11 @@ class BoundingBoxDeserializer {
     }
 
     private static AbstractBoundingBox deserializeStructure(PayloadReader reader) {
-        if (!reader.isReadable(4)) return null;
+        if (!reader.isReadable(28)) return null;
         BoundingBoxType type = BoundingBoxType.getByNameHash(reader.readInt());
-        if (type == null) return null;
         Coords minCoords = reader.readCoords();
         Coords maxCoords = reader.readCoords();
+        if (type == null) return null;
         return BoundingBoxCuboid.from(minCoords, maxCoords, type);
     }
 }

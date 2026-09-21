@@ -1,6 +1,6 @@
 package com.irtimaled.bbor;
 
-import com.irtimaled.bbor.client.ClientProxy;
+import com.irtimaled.bbor.client.ClientProxyInitializer;
 import com.irtimaled.bbor.common.CommonProxy;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -24,7 +24,7 @@ public class BBORNeoForgeMod {
         BBORNetworking.register(modEventBus);
         NeoForge.EVENT_BUS.register(new BBORNeoForgeModListener());
         if (FMLEnvironment.dist == Dist.CLIENT && clientInitialized.compareAndSet(false, true)) {
-            new ClientProxy().init(modEventBus);
+            ClientProxyInitializer.init(modEventBus);
         }
     }
 
