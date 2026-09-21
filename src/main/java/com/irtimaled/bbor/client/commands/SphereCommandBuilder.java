@@ -26,17 +26,16 @@ class SphereCommandBuilder {
                             CommandHelper.feedback(context, "bbor.commands.sphere.cleared.all");
                             return 0;
                         })
-                        .then(CommandManager.argument(ArgumentNames.FROM, Arguments.coords())
-                                .then(CommandManager.argument(ArgumentNames.TO, Arguments.coords())
-                                        .executes(context -> {
-                                            Point pos = Arguments.getPoint(context, ArgumentNames.POS).snapXZ(0.5d);
-                                            boolean removed = CustomSphereProvider.remove(pos);
+                        .then(CommandManager.argument(ArgumentNames.POS, Arguments.point())
+                                .executes(context -> {
+                                    Point pos = Arguments.getPoint(context, ArgumentNames.POS).snapXZ(0.5d);
+                                    boolean removed = CustomSphereProvider.remove(pos);
 
-                                            String format = removed ? "bbor.commands.sphere.cleared" : "bbor.commands.sphere.notFound";
-                                            CommandHelper.feedback(context, format,
-                                                    pos.getX(), pos.getY(), pos.getZ());
-                                            return 0;
-                                        }))));
+                                    String format = removed ? "bbor.commands.sphere.cleared" : "bbor.commands.sphere.notFound";
+                                    CommandHelper.feedback(context, format,
+                                            pos.getX(), pos.getY(), pos.getZ());
+                                    return 0;
+                                })));
     }
 
     private static int addSphere(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
