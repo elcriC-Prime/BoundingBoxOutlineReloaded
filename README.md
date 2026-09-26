@@ -1,5 +1,10 @@
 # BoundingBoxOutlineReloaded (BBOR) — 1.21.1 NeoForge
 
+> [!IMPORTANT]
+> **Unofficial NeoForge Port & AI-Assisted Development**
+> - **Project Scope**: This is an unofficial port of [Irtimaled/BoundingBoxOutlineReloaded](https://github.com/irtimaled/BoundingBoxOutlineReloaded) updated for **Minecraft 1.21.1 (NeoForge)**.
+> - **AI-Assisted Development**: Co-developed and ported with the assistance of **Google Gemini 3.8 Flash** (including NeoForge 1.21.1 networking protocol refactoring, custom packet codecs, and modern rendering pipeline optimizations).
+
 An updated, modernized edition of **BoundingBoxOutlineReloaded (BBOR)** for **Minecraft 1.21.1 (NeoForge)**.
 
 BBOR is an essential utility mod for technical Minecraft players, farm designers, and survival architects. It visualizes bounding boxes of game structures, mob spawning regions, slime chunks, spawn chunks, beacon ranges, and more in customizable colors directly in your world.
@@ -95,5 +100,5 @@ BBOR features a rich set of client-side and server-friendly commands:
 ## Credits & License
 
 - Original mod created by **[Irtimaled](https://github.com/irtimaled/BoundingBoxOutlineReloaded)**.
-- Maintained and updated for NeoForge 1.21.1.
+- Maintained and updated for NeoForge 1.21.1 with the assistance of **Google Gemini 3.8 Flash**.
 - Released under the **[MIT License](LICENSE)**.
