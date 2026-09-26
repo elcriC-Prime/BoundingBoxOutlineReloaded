@@ -1,44 +1,39 @@
 # BoundingBoxOutlineReloaded (BBOR) — 1.21.1 NeoForge
 
-![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-blue?style=flat-square&logo=minecraft)
-![NeoForge](https://img.shields.io/badge/Modloader-NeoForge_21.1+-orange?style=flat-square)
-![Java](https://img.shields.io/badge/Java-21-red?style=flat-square&logo=openjdk)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
-
 An updated, modernized edition of **BoundingBoxOutlineReloaded (BBOR)** for **Minecraft 1.21.1 (NeoForge)**.
 
 BBOR is an essential utility mod for technical Minecraft players, farm designers, and survival architects. It visualizes bounding boxes of game structures, mob spawning regions, slime chunks, spawn chunks, beacon ranges, and more in customizable colors directly in your world.
 
 ---
 
-## ✨ Features & Highlights
+## Features & Highlights
 
-### 🏰 1.21.1 Structure Support
+### 1.21.1 Structure Support
 Fully supports modern vanilla Minecraft structures with accurate bounding boxes:
 - **Trial Chambers** (including internal chambers, corridors, and combat zones)
-- **Ancient Cities** & Nether Remnants (Bastions, Nether Fortresses, Nether Fossils)
-- **Trail Ruins**, Ocean Monuments, Witch Huts, Desert & Jungle Temples
+- **Ancient Cities** and Nether Remnants (Bastions, Nether Fortresses, Nether Fossils)
+- **Trail Ruins**, Ocean Monuments, Witch Huts, Desert and Jungle Temples
 - **Strongholds**, End Cities, Woodland Mansions, Pillager Outposts, Mineshafts, and Villages
 
-### 🧩 Seamless Mod Compatibility
+### Mod Compatibility
 - **Shaders & Sodium/Iris**: Built on NeoForge's modern `RenderLevelStageEvent` pipeline. Completely compatible with **Sodium / Embeddium** and **Iris / Oculus** with zero shader pipeline conflicts or broken depth rendering.
 - **Create & Heavy Content Mods**: Fully isolated lifecycle loading to avoid registry conflicts during mod initialization.
 - **Dynamic Modded Structure Detection**: Automatically scans and registers custom structures added by worldgen mods (e.g., *YUNG's*, *When Dungeons Arise*, *Towns and Towers*).
 
-### 🛠️ In-Game Configuration & Search
+### In-Game Configuration & Search
 - Press **`G`** to open the in-game settings menu.
 - **Instant Search**: Type into the top search bar to filter through dozens or hundreds of structure types in real-time.
 - **A–Z Grouped Sorting**: All vanilla and modded structures are neatly sorted and grouped by namespace.
 - Customizable wireframe colors and face fill opacity with an interactive color picker.
 
-### 🌐 Multiplayer & Technical Server Ready
+### Multiplayer & Technical Server Ready
 - **Optional Payload Architecture**: Safe to connect to vanilla servers without being kicked.
 - **Servux Protocol Support**: Seamlessly receives structure data from servers running **Servux** or **QuickCarpet**.
 - **Dedicated Server Support**: Cleanly separates client rendering from server-side logic; fully safe for dedicated servers.
 
 ---
 
-## 📦 What It Can Render
+## Render Capabilities
 
 | Feature | Description |
 | :--- | :--- |
@@ -55,7 +50,7 @@ Fully supports modern vanilla Minecraft structures with accurate bounding boxes:
 
 ---
 
-## 🎮 Controls & Shortcuts
+## Controls & Shortcuts
 
 All shortcuts can be reconfigured in the standard Minecraft **Controls** menu:
 
@@ -66,7 +61,7 @@ All shortcuts can be reconfigured in the standard Minecraft **Controls** menu:
 
 ---
 
-## 💬 Commands
+## Commands
 
 BBOR features a rich set of client-side and server-friendly commands:
 
@@ -88,7 +83,7 @@ BBOR features a rich set of client-side and server-friendly commands:
 
 ---
 
-## 📥 Installation
+## Installation
 
 1. Install **[Minecraft 1.21.1](https://www.minecraft.net/)**.
 2. Install **[NeoForge 21.1+](https://neoforged.net/)**.
@@ -97,7 +92,7 @@ BBOR features a rich set of client-side and server-friendly commands:
 
 ---
 
-## 📜 Credits & License
+## Credits & License
 
 - Original mod created by **[Irtimaled](https://github.com/irtimaled/BoundingBoxOutlineReloaded)**.
 - Maintained and updated for NeoForge 1.21.1.
