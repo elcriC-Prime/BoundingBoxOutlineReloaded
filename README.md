@@ -1,95 +1,104 @@
-# BoundingBoxOutlineReloaded (Minecraft 1.21.1 NeoForge)
+# BoundingBoxOutlineReloaded (BBOR) — 1.21.1 NeoForge
 
-> [!IMPORTANT]
-> **Unofficial NeoForge Port**
->
-> - **Project Scope**: This is an unofficial port of [Irtimaled/BoundingBoxOutlineReloaded](https://github.com/irtimaled/BoundingBoxOutlineReloaded) updated for **Minecraft 1.21.1 (NeoForge)**.
-> - **AI-Assisted Development**: Co-developed and ported with the assistance of **Google Gemini 3.8 Flash** (including NeoForge 1.21.1 networking protocol refactoring, custom packet codecs, and modern rendering pipeline optimizations).
+![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-blue?style=flat-square&logo=minecraft)
+![NeoForge](https://img.shields.io/badge/Modloader-NeoForge_21.1+-orange?style=flat-square)
+![Java](https://img.shields.io/badge/Java-21-red?style=flat-square&logo=openjdk)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-BoundingBoxOutlineReloaded is a mod for Minecraft (NeoForge, Forge, Fabric, etc.)
+An updated, modernized edition of **BoundingBoxOutlineReloaded (BBOR)** for **Minecraft 1.21.1 (NeoForge)**.
 
-## What it does
+BBOR is an essential utility mod for technical Minecraft players, farm designers, and survival architects. It visualizes bounding boxes of game structures, mob spawning regions, slime chunks, spawn chunks, beacon ranges, and more in customizable colors directly in your world.
 
-This mod highlights in a variety of colours and styles the different structures & features of the game:-
-- Nether Fortresses; red boxes bound each individual area where Blaze, Wither Skeletons & normal Skeletons will spawn. Time for a beacon methinks!
-- Witch Huts; blue boxes reveal everywhere only witches spawn. Witch farm anyone?
-- Desert Temples; orange boxes envelop the pyramid and towers. Go grab some loot but beware TNT boobie traps!
-- Jungle Temples; dark green boxes surround the temple. Indianna Jones would've love these!
-- Ocean Monuments; cyan boxes indicate where guardians spawn. Sea lantern and prismarine block types FTW.
-- End Cities; magenta boxes show the rooms, corridors and air ships in the End. Time to fall with style!
-- Strongholds; yellow boxes show each room in the stronghold. Does anyone make anything with silverfish spawners?
-- Woodland Mansions; brown boxes show each room in the woodland mansion. Here's Johnny!
-- Mine Shafts; light gray boxes illustrate each of the mine shafts. Cobwebs... grrr!
-- Villages (*); gray boxes designate each building in the generated village. Check out the blacksmith loot chest!
-- Slime chunks; dark green boxes highlight where slimes will spawn, with a dynamic box that rises to where the players feet are to help find them from the surface. Bouncy... bouncy...
-- World Spawn & spawn chunks; red boxes outline the world spawn and the spawn chunks (active & lazy).
-- Igloos (*); white boxes show where igloos are. Maybe you can convert the zombie villager back?
-- Shipwrecks (*); cyan boxes are like a lighthouse those wary sailors wish they'd had. Time to find some buried treasure? 
-- Ocean ruins (*); cyan boxes show the different ocean ruin structures. Watch out for those pesky drowns tho!
-- Buried treasure (*); cyan boxes highlight where the heart of the sea can be found. Conduit anyone?
-- Mob Spawners; bright green boxes show where mob spawners are, where mobs will be spawned, and red/orange/green lines help the player see if a spawner is nearby and activated.
-- Pillager Outposts; dark gray boxes outline where crossbow wielding pillagers will spawn. Beware of bad omens tho!
-- Village Spheres (+); multicoloured spheres encircle the village, with boxes marking if and where iron golems will spawn. You should see the iron titan... CRAZY!
+---
 
-(*) Prior to 1.14.4, due to how Minecraft generates these structures they will initially float above where they should be, however upon re-loading the world they should drop down to the correct height. Unfortunately (or fortunately?) buried treasure will always appear at y-90. This works as expected in 1.14.4.
-(+) In 1.14 and above the concept of a village based on doors being involved in iron golem spawning has gone away, so this feature goes away too.
+## ✨ Features & Highlights
 
-## Why did I make it?
+### 🏰 1.21.1 Structure Support
+Fully supports modern vanilla Minecraft structures with accurate bounding boxes:
+- **Trial Chambers** (including internal chambers, corridors, and combat zones)
+- **Ancient Cities** & Nether Remnants (Bastions, Nether Fortresses, Nether Fossils)
+- **Trail Ruins**, Ocean Monuments, Witch Huts, Desert & Jungle Temples
+- **Strongholds**, End Cities, Woodland Mansions, Pillager Outposts, Mineshafts, and Villages
 
-I loved 4poc's BBOutline mod but the only version I could get to work consistently was for Minecraft 1.6.4. This is fine if you want Nether Fortress bounding boxes but if you need witch huts the new block types can cause Minecraft 1.6.4 to crash horribly; and don't get me started on item frames crashing Minecraft 1.6.4!
+### 🧩 Seamless Mod Compatibility
+- **Shaders & Sodium/Iris**: Built on NeoForge's modern `RenderLevelStageEvent` pipeline. Completely compatible with **Sodium / Embeddium** and **Iris / Oculus** with zero shader pipeline conflicts or broken depth rendering.
+- **Create & Heavy Content Mods**: Fully isolated lifecycle loading to avoid registry conflicts during mod initialization.
+- **Dynamic Modded Structure Detection**: Automatically scans and registers custom structures added by worldgen mods (e.g., *YUNG's*, *When Dungeons Arise*, *Towns and Towers*).
 
-In addition to this not working with newer worlds, the way it bounds villages lacks the finesse of KaboPC's VillageMarker mod, and any new structures introduced in Minecraft are missing entirely.
+### 🛠️ In-Game Configuration & Search
+- Press **`G`** to open the in-game settings menu.
+- **Instant Search**: Type into the top search bar to filter through dozens or hundreds of structure types in real-time.
+- **A–Z Grouped Sorting**: All vanilla and modded structures are neatly sorted and grouped by namespace.
+- Customizable wireframe colors and face fill opacity with an interactive color picker.
 
-## How it works
+### 🌐 Multiplayer & Technical Server Ready
+- **Optional Payload Architecture**: Safe to connect to vanilla servers without being kicked.
+- **Servux Protocol Support**: Seamlessly receives structure data from servers running **Servux** or **QuickCarpet**.
+- **Dedicated Server Support**: Cleanly separates client rendering from server-side logic; fully safe for dedicated servers.
 
-As chunks are loaded the game provides metadata about all the different structures & features in those chunks. The mod interprets this meta data, caches the results, and renders the bounding boxes to the screen. In an SMP environment this data is not present on the clients so the mod needs to run on the server where the processing happens and then the relevant metadata is sent to the clients for them to render.
+---
 
-## Installing (Forge/LiteLoader/Rift/Fabric)
+## 📦 What It Can Render
 
-Make sure you have the relevant mod loader installed then drop the mod file into the appropriate mods folder. This approach can be used for client and server deployments where needed.
+| Feature | Description |
+| :--- | :--- |
+| **Structures** | Outlines inner pieces as well as overarching structure bounding boxes. |
+| **Outer Boxes Only** | Toggle to simplify complex structures by displaying only their outer perimeter. |
+| **Slime Chunks** | Shows slime spawn chunks with height-tracking indicators up to the player's level. |
+| **World Spawn & Spawn Chunks** | Visualizes active and lazy spawn chunk boundaries. |
+| **Mob Spawners** | Displays spawn volume and dynamic lines indicating player activation distance. |
+| **Beacons & Conduits** | Visualizes full effect radius and conduit mob harm zones. |
+| **Biome Borders** | Renders 3D boundary walls between biomes. |
+| **AFK Spawning Spheres** | Displays 24–128 block spherical mob spawning and despawning boundaries. |
+| **Spawnable Blocks** | Highlights light-level sensitive spawnable blocks around the player. |
+| **Custom Boxes & Lines** | Create custom user-defined bounding boxes anywhere via commands. |
 
-## Installing (Vanilla)
+---
 
-Double-click the jar file and a client profile for the relevant version of Minecraft will be created/updated in the launcher.
+## 🎮 Controls & Shortcuts
 
-## Running a server (Vanilla)
+All shortcuts can be reconfigured in the standard Minecraft **Controls** menu:
 
-To start a vanilla server with the mod loaded, copy the relevant jar file to a folder, and run:-
+- **`B`** — Global Toggle (instantly turn all BBOR rendering on/off)
+- **`G`** (or `B + G`) — Open the **BBOR Settings Screen**
+- **`O`** (or `B + O`) — Toggle **Outer Boxes Only** mode
+- **`L`** (or `B + L`) — Open **Load Save Structure Cache** menu
+
+---
+
+## 💬 Commands
+
+BBOR features a rich set of client-side and server-friendly commands:
+
+```sh
+# Set or synchronize world seed (useful on vanilla servers for slime chunks)
+/bbor:seed <seed>
+
+# Add a custom bounding box
+/bbor:box add <name> <minX> <minY> <minZ> <maxX> <maxY> <maxZ> [#HEX_COLOR]
+
+# Remove or clear custom bounding boxes
+/bbor:box remove <name>
+/bbor:box clear
+
+# Spawning sphere visualization
+/bbor:spawnsphere set <x> <y> <z>
+/bbor:spawnsphere clear
 ```
-java -jar BBOutlineReloaded-{version}.jar --server
-```
 
-Running this will download the necessary pre-requisities and start the server.
+---
 
-## Configuring
+## 📥 Installation
 
-The keyboard shortcuts can be configured in the standard Controls screen.
+1. Install **[Minecraft 1.21.1](https://www.minecraft.net/)**.
+2. Install **[NeoForge 21.1+](https://neoforged.net/)**.
+3. Place `BBOutlineReloaded-neoforge-2.6-1.21.1.jar` into your `.minecraft/mods/` directory.
+4. Launch the game and enjoy!
 
-Most of the options are available for configuration on the client through a configuration Gui. On Vanilla, Rift & Fabric there is a BBOR button on the options screen, alternatively press and hold B key when in game.
+---
 
-In the table below are a couple of old config options that can only be edited by opening the config/BBOutlineReloaded.cfg file with a text editor. The Minecraft Client will need to be restarted for the settings changed this way to take effect.
+## 📜 Credits & License
 
-Option | Description | Cfg File Key | Cfg File Values | Default
---- | --- | --- | --- | ---
-Always Visible | Bounding boxes are visible through blocks - kinda messes with perspective tho! | alwaysVisible | true/false | false
-Keep Cache Between Sessions | Bounding box caches are not cleared when disconnecting from single or multiplayer worlds. | keepCacheBetweenSessions | true/false | false
-
-## Using
-
-- Press B, sit back and enjoy the goodness flowing onto your screen.
-- Press B and G to open the configuration Gui.
-- Press B and O to switch the "Display Outer Boxes Only" mode on and off, this will allow you to see the full boundary of Nether Fortresses, End Cities, Strongholds and Mineshafts
-
-## Bounding boxes when connected to servers
-
-There are a couple of options when you want bounding boxes to show whilst accessing servers:-
-
-- Use a modded server - Ensure the server is running with this mod loaded (as described above), and connect to the server with a client with this mod loaded. 
-- Keep cache - With the "Keep Cache Between Sessions" config setting enabled, Open a copy of the world in single player and move around to capture all the structures you want in the cache. Once you are happy with the structures you have cached, quit the single player game and connect to the server without closing Minecraft. You will see all the structures from the cache.
-
-## Links
-- Original Mod by Irtimaled - [GitHub Repository](https://github.com/irtimaled/BoundingBoxOutlineReloaded)
-- NeoForge - [Official Website](https://neoforged.net/)
-- Forge - [Download](https://files.minecraftforge.net/)
-- 4poc's BBOutline mod - [Forum](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286555-bounding-box-outline) | [Source](http://www.github.com/4poc/bboutline)
-- KaboPC's VillageMarker mod - [Forum](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1288327-village-marker-mod)
+- Original mod created by **[Irtimaled](https://github.com/irtimaled/BoundingBoxOutlineReloaded)**.
+- Maintained and updated for NeoForge 1.21.1.
+- Released under the **[MIT License](LICENSE)**.
