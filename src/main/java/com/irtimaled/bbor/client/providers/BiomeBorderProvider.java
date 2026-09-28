@@ -25,6 +25,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.Direction;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class BiomeBorderProvider implements IBoundingBoxProvider<BoundingBoxBiomeBorder>, ICachingProvider {
@@ -172,17 +173,14 @@ public class BiomeBorderProvider implements IBoundingBoxProvider<BoundingBoxBiom
         return shouldRender;
     }
 
-    public void cleanup() {
+    public synchronized void cleanup() {
         queuedUpdateChunks.clear();
         if (!used) return;
         doCleanup = true;
         try {
             boxes.clear();
-            boxes.trim();
             bfsQueue.clear();
-            bfsQueue.trim();
             bfsSearchedPos.clear();
-            bfsSearchedPos.trim();
             lastSectionPos = Long.MAX_VALUE;
         } finally {
             doCleanup = false;
@@ -208,7 +206,7 @@ public class BiomeBorderProvider implements IBoundingBoxProvider<BoundingBoxBiom
     private int lastRenderDistanceChunks = 0;
 
     @Override
-    public Iterable<BoundingBoxBiomeBorder> get(DimensionId dimensionId) {
+    public synchronized Iterable<BoundingBoxBiomeBorder> get(DimensionId dimensionId) {
         if (!canProvide(dimensionId)) return java.util.Collections.emptyList();
         int renderDistanceChunks = ConfigManager.biomeBordersRenderDistance.get();
         final boolean renderOnlyCurrentBiome = ConfigManager.renderOnlyCurrentBiome.get();
@@ -332,7 +330,7 @@ public class BiomeBorderProvider implements IBoundingBoxProvider<BoundingBoxBiom
 
         lastSectionPos = currentSectionPos;
         hasUpdate = false;
-        return boxes;
+        return new ArrayList<>(boxes);
     }
 
     public static int pendingUpdates() {

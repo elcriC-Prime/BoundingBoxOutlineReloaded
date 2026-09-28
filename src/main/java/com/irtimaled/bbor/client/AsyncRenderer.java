@@ -49,6 +49,7 @@ public class AsyncRenderer {
     private static volatile List<AbstractBoundingBox> syncRenders = List.of();
     private static final AtomicInteger runningBuilds = new AtomicInteger();
     private static boolean defaultBuilt = false;
+    private static final Object BUILD_LOCK = new Object();
 
     public static void forceRebuild() {
         lastBuildTime = 0;
@@ -101,6 +102,7 @@ public class AsyncRenderer {
                 if (!defaultBuilt) {
                     build0(dimensionId, DEFAULT, true);
                     defaultBuilt = true;
+                    lastBuildTime = System.currentTimeMillis();
                 }
                 draw(matrixStack, modelViewMatrix, projectionMatrix, camera, DEFAULT);
                 lastCtx = DEFAULT;
@@ -149,6 +151,9 @@ public class AsyncRenderer {
             toDiscardBuild = buildingFuture != null;
             defaultBuilt = false;
         }
+        if (!defaultBuilt && currentAsyncContext == -1) {
+            return -1;
+        }
         if ((buildingFuture == null || buildingFuture.isDone()) && lastBuildTime + 2000 < System.currentTimeMillis()) {
             lastBuildTime = System.currentTimeMillis();
             RenderingContext ctx = asyncContexts[(currentAsyncContext + 1) % asyncContexts.length];
@@ -176,28 +181,30 @@ public class AsyncRenderer {
     }
 
     private static void build0(DimensionId dimensionId, RenderingContext ctx, boolean onRenderThread) {
-        ctx.reset();
-        ctx.beginBatch();
-        runningBuilds.incrementAndGet();
+        synchronized (BUILD_LOCK) {
+            ctx.reset();
+            ctx.beginBatch();
+            runningBuilds.incrementAndGet();
 
-        try {
-            final List<AbstractBoundingBox> boundingBoxes = ClientRenderer.getBoundingBoxes(dimensionId);
-            final List<AbstractBoundingBox> syncs = new ObjectArrayList<>();
-            RenderCulling.flushPreRendering();
-            for (AbstractBoundingBox key : boundingBoxes) {
-                AbstractRenderer renderer = key.getRenderer();
-                if (renderer != null) {
-                    renderer.render(ctx, key);
-                    if (key.needSyncRendering()) {
-                        if (onRenderThread) renderer.renderSync(ctx, key);
-                        else syncs.add(key);
+            try {
+                final List<AbstractBoundingBox> boundingBoxes = ClientRenderer.getBoundingBoxes(dimensionId);
+                final List<AbstractBoundingBox> syncs = new ObjectArrayList<>();
+                RenderCulling.flushPreRendering();
+                for (AbstractBoundingBox key : boundingBoxes) {
+                    AbstractRenderer renderer = key.getRenderer();
+                    if (renderer != null) {
+                        renderer.render(ctx, key);
+                        if (key.needSyncRendering()) {
+                            if (onRenderThread) renderer.renderSync(ctx, key);
+                            else syncs.add(key);
+                        }
                     }
                 }
+                syncRenders = syncs;
+            } finally {
+                runningBuilds.decrementAndGet();
+                ctx.endBatch();
             }
-            syncRenders = syncs;
-        } finally {
-            runningBuilds.decrementAndGet();
-            ctx.endBatch();
         }
     }
 
