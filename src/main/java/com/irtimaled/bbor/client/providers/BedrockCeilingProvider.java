@@ -75,7 +75,9 @@ public class BedrockCeilingProvider implements IBoundingBoxProvider<BoundingBoxB
 
     {
         EventBus.subscribe(ClientWorldUpdateTracker.ChunkLoadEvent.class, event -> {
-            this.chunks.put(ChunkPos.toLong(event.x(), event.z()), new BedrockChunk(event.x(), event.z()));
+            if (BoundingBoxTypeHelper.shouldRender(BoundingBoxType.BedrockCeiling) && Player.getDimensionId() == DimensionId.NETHER) {
+                this.chunks.put(ChunkPos.toLong(event.x(), event.z()), new BedrockChunk(event.x(), event.z()));
+            }
         });
         EventBus.subscribe(ClientWorldUpdateTracker.ChunkUnloadEvent.class, event -> {
             this.chunks.remove(ChunkPos.toLong(event.x(), event.z()));
@@ -110,7 +112,11 @@ public class BedrockCeilingProvider implements IBoundingBoxProvider<BoundingBoxB
             for (int chunkZ = playerChunkZ - renderDistanceChunks; chunkZ <= playerChunkZ + renderDistanceChunks; chunkZ++) {
                 long key = ChunkPos.toLong(chunkX, chunkZ);
                 BedrockChunk chunk = chunks.get(key);
-                if (chunk == null) continue;
+                if (chunk == null) {
+                    if (!BedrockCeilingHelper.chunkLoaded(chunkX, chunkZ)) continue;
+                    chunk = new BedrockChunk(chunkX, chunkZ);
+                    chunks.put(key, chunk);
+                }
                 for (BoundingBoxBedrockCeiling box : chunk.getBlocks()) {
                     if (box != null) {
                         boxes.add(box);

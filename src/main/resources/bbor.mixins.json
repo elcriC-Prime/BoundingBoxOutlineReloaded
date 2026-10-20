@@ -9,24 +9,19 @@
     "access.IBiome",
     "access.IServerCommonNetworkHandler",
     "access.IStructureStart",
-    "server.MixinDynamicRegistryManager",
     "server.MixinMinecraftServer",
-    "server.MixinServerChunkLoadingManager",
     "server.management.MixinPlayerList"
   ],
   "client": [
     "access.IKeyBinding",
     "client.MixinKeyboard",
-    "client.MixinMinecraft",
     "client.access.IClientChunkManager",
     "client.access.IClientChunkManagerClientChunkMap",
     "client.access.IConduitBlockEntity",
     "client.gui.screen.MixinChatScreen",
     "client.network.common.MixinClientCommonNetworkHandler",
     "client.network.login.MixinClientLoginNetHandler",
-    "client.network.play.MixinClientPlayNetHandler",
     "client.renderer.MixinDebugHud",
-    "client.renderer.MixinGameRenderer",
     "client.settings.MixinKeyBinding",
     "client.world.MixinClientPlayNetworkHandler",
     "client.world.MixinClientWorld",
@@ -41,6 +36,5 @@
     "network.common.s2c.MixinSSpawnPositionPacket"
   ],
   "server": [
-    "server.dedicated.MixinDedicatedServer"
   ]
 }

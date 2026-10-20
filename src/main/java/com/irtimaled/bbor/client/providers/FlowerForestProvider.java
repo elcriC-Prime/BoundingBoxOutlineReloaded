@@ -54,8 +54,12 @@ public class FlowerForestProvider implements IBoundingBoxProvider<BoundingBoxFlo
         }
 
         private BoundingBoxFlowerForest getBox(int x, int z) {
-            if (MinecraftClient.getInstance().world.getBiome(new BlockPos(x, 255, z)).matchesKey(BiomeKeys.FLOWER_FOREST)) {
+            var world = MinecraftClient.getInstance().world;
+            if (world == null) return null;
+            int topY = world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
+            if (world.getBiome(new BlockPos(x, topY, z)).matchesKey(BiomeKeys.FLOWER_FOREST)) {
                 int y = getMaxYForPos(x, 128, z);
+                if (y <= world.getBottomY()) return null;
                 final Coords coords = new Coords(x, y + 1, z);
                 return new BoundingBoxFlowerForest(coords, FlowerForestHelper.getFlowerColorAtPos(coords));
             } else {
@@ -70,7 +74,9 @@ public class FlowerForestProvider implements IBoundingBoxProvider<BoundingBoxFlo
 
     {
         EventBus.subscribe(ClientWorldUpdateTracker.ChunkLoadEvent.class, event -> {
-            this.chunks.put(ChunkPos.toLong(event.x(), event.z()), new FlowerForestChunk(event.x(), event.z()));
+            if (BoundingBoxTypeHelper.shouldRender(BoundingBoxType.FlowerForest)) {
+                this.chunks.put(ChunkPos.toLong(event.x(), event.z()), new FlowerForestChunk(event.x(), event.z()));
+            }
         });
         EventBus.subscribe(ClientWorldUpdateTracker.ChunkUnloadEvent.class, event -> {
             this.chunks.remove(ChunkPos.toLong(event.x(), event.z()));
@@ -97,6 +103,8 @@ public class FlowerForestProvider implements IBoundingBoxProvider<BoundingBoxFlo
     @Override
     public Iterable<BoundingBoxFlowerForest> get(DimensionId dimensionId) {
         if (!canProvide(dimensionId)) return java.util.Collections.emptyList();
+        var world = MinecraftClient.getInstance().world;
+        if (world == null) return java.util.Collections.emptyList();
         int renderDistanceChunks = ConfigManager.flowerForestsRenderDistance.get();
         int playerChunkX = ChunkSectionPos.getSectionCoord(Player.getX());
         int playerChunkZ = ChunkSectionPos.getSectionCoord(Player.getZ());
@@ -108,7 +116,11 @@ public class FlowerForestProvider implements IBoundingBoxProvider<BoundingBoxFlo
             for (int chunkZ = playerChunkZ - renderDistanceChunks; chunkZ <= playerChunkZ + renderDistanceChunks; chunkZ++) {
                 long key = ChunkPos.toLong(chunkX, chunkZ);
                 FlowerForestChunk chunk = chunks.get(key);
-                if (chunk == null) continue;
+                if (chunk == null) {
+                    if (!world.isChunkLoaded(chunkX, chunkZ)) continue;
+                    chunk = new FlowerForestChunk(chunkX, chunkZ);
+                    chunks.put(key, chunk);
+                }
                 for (BoundingBoxFlowerForest box : chunk.getBlocks()) {
                     if (box != null) {
                         boxes.add(box);
@@ -125,12 +137,15 @@ public class FlowerForestProvider implements IBoundingBoxProvider<BoundingBoxFlo
     }
 
     private static int getMaxYForPos(int x, int y, int z) {
-        int topY = MinecraftClient.getInstance().world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
-        if (topY == 0) topY = y; // heightmap appears to be broken
-        while (topY > 0) {
+        var world = MinecraftClient.getInstance().world;
+        if (world == null) return Integer.MIN_VALUE;
+        int bottomY = world.getBottomY();
+        int topY = world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
+        if (topY <= bottomY) topY = y; // heightmap appears to be broken
+        while (topY > bottomY) {
             if (FlowerForestHelper.canGrowFlower(x, topY, z)) return topY;
             topY--;
         }
-        return 0;
+        return bottomY;
     }
 }

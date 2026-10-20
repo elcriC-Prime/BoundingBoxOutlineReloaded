@@ -1,5 +1,6 @@
 package com.irtimaled.bbor.client.renderers;
 
+import com.irtimaled.bbor.client.Player;
 import com.irtimaled.bbor.client.RenderCulling;
 import com.irtimaled.bbor.client.config.ConfigManager;
 import com.irtimaled.bbor.client.models.Point;
@@ -29,7 +30,8 @@ public abstract class AbstractRenderer<T extends AbstractBoundingBox> {
     }
 
     private void renderCuboid0(RenderingContext ctx, OffsetBox nudge, Color color, boolean fillOnly, int fillAlpha, boolean mask) {
-        if (!ConfigManager.asyncBuilding.get() && ((ConfigManager.fastRender.get() >= 1) && !RenderCulling.isVisibleCulling(nudge.toBox()))) return;
+        final Box box = nudge.toBox();
+        if (!ConfigManager.asyncBuilding.get() && ((ConfigManager.fastRender.get() >= 1) && !RenderCulling.isVisibleCulling(box))) return;
         if (ConfigManager.invertBoxColorPlayerInside.get() &&
                 playerInsideBoundingBox(nudge)) {
             color = new Color(255 - color.getRed(), 255 - color.getGreen(), 255 - color.getBlue());
@@ -42,32 +44,40 @@ public abstract class AbstractRenderer<T extends AbstractBoundingBox> {
         final double maxZ = nudge.getMax().getZ();
 
         if (fillOnly || ConfigManager.fill.get()) {
-            ctx.drawSolidBox(nudge.toBox(), color, fillAlpha, mask, minX == maxX, minY == maxY, minZ == maxZ);
+            ctx.drawSolidBox(box, color, fillAlpha, mask, minX == maxX, minY == maxY, minZ == maxZ);
         }
         if (!fillOnly) {
-            renderLine(ctx, new OffsetPoint(minX, minY, minZ), new OffsetPoint(maxX, minY, minZ), color, true);
-            renderLine(ctx, new OffsetPoint(maxX, minY, minZ), new OffsetPoint(maxX, minY, maxZ), color, true);
-            renderLine(ctx, new OffsetPoint(maxX, minY, maxZ), new OffsetPoint(minX, minY, maxZ), color, true);
-            renderLine(ctx, new OffsetPoint(minX, minY, maxZ), new OffsetPoint(minX, minY, minZ), color, true);
-            renderLine(ctx, new OffsetPoint(minX, minY, minZ), new OffsetPoint(minX, maxY, minZ), color, true);
-            renderLine(ctx, new OffsetPoint(maxX, minY, minZ), new OffsetPoint(maxX, maxY, minZ), color, true);
-            renderLine(ctx, new OffsetPoint(maxX, minY, maxZ), new OffsetPoint(maxX, maxY, maxZ), color, true);
-            renderLine(ctx, new OffsetPoint(minX, minY, maxZ), new OffsetPoint(minX, maxY, maxZ), color, true);
-            renderLine(ctx, new OffsetPoint(minX, maxY, minZ), new OffsetPoint(maxX, maxY, minZ), color, true);
-            renderLine(ctx, new OffsetPoint(maxX, maxY, minZ), new OffsetPoint(maxX, maxY, maxZ), color, true);
-            renderLine(ctx, new OffsetPoint(maxX, maxY, maxZ), new OffsetPoint(minX, maxY, maxZ), color, true);
-            renderLine(ctx, new OffsetPoint(minX, maxY, maxZ), new OffsetPoint(minX, maxY, minZ), color, true);
+            renderLine(ctx, minX, minY, minZ, maxX, minY, minZ, color, true);
+            renderLine(ctx, maxX, minY, minZ, maxX, minY, maxZ, color, true);
+            renderLine(ctx, maxX, minY, maxZ, minX, minY, maxZ, color, true);
+            renderLine(ctx, minX, minY, maxZ, minX, minY, minZ, color, true);
+            renderLine(ctx, minX, minY, minZ, minX, maxY, minZ, color, true);
+            renderLine(ctx, maxX, minY, minZ, maxX, maxY, minZ, color, true);
+            renderLine(ctx, maxX, minY, maxZ, maxX, maxY, maxZ, color, true);
+            renderLine(ctx, minX, minY, maxZ, minX, maxY, maxZ, color, true);
+            renderLine(ctx, minX, maxY, minZ, maxX, maxY, minZ, color, true);
+            renderLine(ctx, maxX, maxY, minZ, maxX, maxY, maxZ, color, true);
+            renderLine(ctx, maxX, maxY, maxZ, minX, maxY, maxZ, color, true);
+            renderLine(ctx, minX, maxY, maxZ, minX, maxY, minZ, color, true);
         }
     }
 
     private boolean playerInsideBoundingBox(OffsetBox nudge) {
-        return nudge.getMin().getX() < 0 && nudge.getMax().getX() > 0 &&
-                nudge.getMin().getY() < 0 && nudge.getMax().getY() > 0 &&
-                nudge.getMin().getZ() < 0 && nudge.getMax().getZ() > 0;
+        double px = Player.getX();
+        double py = Player.getY();
+        double pz = Player.getZ();
+        return nudge.getMin().getX() < px && nudge.getMax().getX() > px &&
+                nudge.getMin().getY() < py && nudge.getMax().getY() > py &&
+                nudge.getMin().getZ() < pz && nudge.getMax().getZ() > pz;
     }
 
 
     void renderLine(RenderingContext ctx, OffsetPoint startPoint, OffsetPoint endPoint, Color color, boolean cullIfEmpty) {
+        renderLine(ctx, startPoint.getX(), startPoint.getY(), startPoint.getZ(),
+                endPoint.getX(), endPoint.getY(), endPoint.getZ(), color, cullIfEmpty);
+    }
+
+    void renderLine(RenderingContext ctx, double startX, double startY, double startZ, double endX, double endY, double endZ, Color color, boolean cullIfEmpty) {
 //        if ((startPoint.getY() == endPoint.getY() && startPoint.getZ() == endPoint.getZ()) ||
 //                (startPoint.getX() == endPoint.getX() && startPoint.getZ() == endPoint.getZ()) ||
 //                (startPoint.getX() == endPoint.getX() && startPoint.getY() == endPoint.getY())) {
@@ -75,10 +85,10 @@ public abstract class AbstractRenderer<T extends AbstractBoundingBox> {
 //            return;
 //        }
 
-        if (cullIfEmpty && startPoint.equals(endPoint)) return;
-        if (!ConfigManager.asyncBuilding.get() && ((ConfigManager.fastRender.get() >= 1) && !RenderCulling.isVisibleCulling(new OffsetBox(startPoint, endPoint).toBox()))) return; // TODO better culling
+        if (cullIfEmpty && startX == endX && startY == endY && startZ == endZ) return;
+        if (!ConfigManager.asyncBuilding.get() && ((ConfigManager.fastRender.get() >= 1) && !RenderCulling.isVisibleCulling(startX, startY, startZ, endX, endY, endZ))) return; // TODO better culling
 
-        ctx.drawLine(startPoint.getPoint(), endPoint.getPoint(), color, 255);
+        ctx.drawLine(startX, startY, startZ, endX, endY, endZ, color, 255);
     }
 
 //    @Deprecated

@@ -19,10 +19,12 @@ public class SpawningSphereHelper {
         int maxZ = blockZ + width + 1;
 
         World world = MinecraftClient.getInstance().world;
+        if (world == null) return;
         int blockY = coords.getY();
         int minY = Math.max(world.getBottomY() + 1, blockY - height);
         int maxY = Math.min(world.getTopY() - 1, blockY + height);
 
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int x = minX; x < maxX; x++) {
             for (int z = minZ; z < maxZ; z++) {
                 double closestX = x + 0.5D;
@@ -30,15 +32,16 @@ public class SpawningSphereHelper {
                 double distance = center.getDistance(new Point(closestX, center.getY(), closestZ));
                 if (distance > BoundingBoxSpawningSphere.SPAWN_RADIUS) continue;
 
-                BlockState upperBlockState = world.getBlockState(new BlockPos(x, minY - 1, z));
+                pos.set(x, minY - 1, z);
+                BlockState upperBlockState = world.getBlockState(pos);
                 for (int y = minY; y < maxY; y++) {
                     BlockState spawnBlockState = upperBlockState;
-                    BlockPos pos = new BlockPos(x, y, z);
+                    pos.set(x, y, z);
                     upperBlockState = world.getBlockState(pos);
                     distance = center.getDistance(new Point(closestX, y, closestZ));
                     if (isWithinSpawnableZone(distance) &&
                             SpawnableBlocksHelper.isSpawnable(world, pos, spawnBlockState, upperBlockState)) {
-                        blockProcessor.process(pos);
+                        blockProcessor.process(pos.toImmutable());
                     }
                 }
             }

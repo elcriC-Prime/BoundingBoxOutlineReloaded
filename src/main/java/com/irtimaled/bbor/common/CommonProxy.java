@@ -30,9 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CommonProxy {
     private final Map<Integer, ServerPlayer> players = new ConcurrentHashMap<>();
-    private final Map<Integer, Set<AbstractBoundingBox>> playerBoundingBoxesCache = new HashMap<>();
-    private final Map<DimensionId, StructureProcessor> structureProcessors = new HashMap<>();
+    private final Map<Integer, Set<AbstractBoundingBox>> playerBoundingBoxesCache = new ConcurrentHashMap<>();
+    private final Map<DimensionId, StructureProcessor> structureProcessors = new ConcurrentHashMap<>();
     private final Map<DimensionId, BoundingBoxCache> dimensionCache = new ConcurrentHashMap<>();
+    private volatile boolean hasNewStructures = false;
     private Long seed = null;
     private Integer spawnX = null;
     private Integer spawnZ = null;
@@ -88,16 +89,13 @@ public class CommonProxy {
     private void structuresLoaded(StructuresLoaded event) {
         DimensionId dimensionId = event.getDimensionId();
         StructureProcessor structureProcessor = getStructureProcessor(dimensionId);
-        structureProcessor.process(event.getStructures());
+        if (structureProcessor.process(event.getStructures())) {
+            hasNewStructures = true;
+        }
     }
 
     private StructureProcessor getStructureProcessor(DimensionId dimensionId) {
-        StructureProcessor structureProcessor = structureProcessors.get(dimensionId);
-        if (structureProcessor == null) {
-            structureProcessor = new StructureProcessor(getOrCreateCache(dimensionId));
-            structureProcessors.put(dimensionId, structureProcessor);
-        }
-        return structureProcessor;
+        return structureProcessors.computeIfAbsent(dimensionId, id -> new StructureProcessor(getOrCreateCache(id)));
     }
 
     private void playerLoggedIn(PlayerLoggedIn event) {
@@ -137,9 +135,9 @@ public class CommonProxy {
         for (Map.Entry<DimensionId, BoundingBoxCache> entry : dimensionCache.entrySet()) {
             DimensionId dimensionId = entry.getKey();
             BoundingBoxCache boundingBoxCache = entry.getValue();
-            if (boundingBoxCache == null) return;
+            if (boundingBoxCache == null) continue;
 
-            Set<AbstractBoundingBox> playerBoundingBoxes = playerBoundingBoxesCache.computeIfAbsent(playerId, k -> new HashSet<>());
+            Set<AbstractBoundingBox> playerBoundingBoxes = playerBoundingBoxesCache.computeIfAbsent(playerId, k -> ConcurrentHashMap.newKeySet());
 
             Map<AbstractBoundingBox, Set<AbstractBoundingBox>> boundingBoxMap = boundingBoxCache.getBoundingBoxes();
             for (AbstractBoundingBox key : boundingBoxMap.keySet()) {
@@ -164,6 +162,8 @@ public class CommonProxy {
     }
 
     private void serverTick() {
+        if (!hasNewStructures || players.isEmpty()) return;
+        hasNewStructures = false;
         for (Map.Entry<Integer, ServerPlayer> playerEntry : players.entrySet()) {
             int playerId = playerEntry.getKey();
             ServerPlayer player = playerEntry.getValue();
@@ -182,6 +182,8 @@ public class CommonProxy {
 
     protected void clearCaches() {
         structureProcessors.clear();
+        playerBoundingBoxesCache.clear();
+        hasNewStructures = false;
         for (BoundingBoxCache cache : dimensionCache.values()) {
             cache.clear();
         }

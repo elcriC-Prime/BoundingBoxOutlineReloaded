@@ -89,11 +89,15 @@ public class ClientInterop {
     }
 
     public static void handleSeedMessage(Text chatComponent) {
-        TypeHelper.doIfType(chatComponent, TranslatableTextContent.class, message -> {
+        if (chatComponent == null) return;
+        TypeHelper.doIfType(chatComponent.getContent(), TranslatableTextContent.class, message -> {
             if (!message.getKey().equals("commands.seed.success")) return;
 
             try {
-                long seed = Long.parseLong(message.getArgs()[0].toString());
+                Object arg = message.getArgs()[0];
+                String seedStr = arg instanceof Text textArg ? textArg.getString() : arg.toString();
+                seedStr = seedStr.replaceAll("[\\[\\]\\s]", "");
+                long seed = Long.parseLong(seedStr);
                 SlimeChunkProvider.setSeed(seed);
             } catch (Exception ignored) {
             }

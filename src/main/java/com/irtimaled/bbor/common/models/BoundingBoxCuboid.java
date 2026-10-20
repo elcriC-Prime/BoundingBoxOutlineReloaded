@@ -46,19 +46,10 @@ public class BoundingBoxCuboid extends AbstractBoundingBox {
 
     @Override
     public Boolean intersectsBounds(int minX, int minZ, int maxX, int maxZ) {
-        boolean minXWithinBounds = isBetween(minCoords.getX(), minX, maxX);
-        boolean maxXWithinBounds = isBetween(maxCoords.getX(), minX, maxX);
-        boolean minZWithinBounds = isBetween(minCoords.getZ(), minZ, maxZ);
-        boolean maxZWithinBounds = isBetween(maxCoords.getZ(), minZ, maxZ);
-
-        return (minXWithinBounds && minZWithinBounds) ||
-                (maxXWithinBounds && maxZWithinBounds) ||
-                (minXWithinBounds && maxZWithinBounds) ||
-                (maxXWithinBounds && minZWithinBounds);
-    }
-
-    private boolean isBetween(int val, int min, int max) {
-        return val >= min && val <= max;
+        return maxCoords.getX() >= minX &&
+                maxCoords.getZ() >= minZ &&
+                minCoords.getX() <= maxX &&
+                minCoords.getZ() <= maxZ;
     }
 
     @Override

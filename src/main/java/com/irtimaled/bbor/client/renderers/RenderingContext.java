@@ -191,20 +191,27 @@ public class RenderingContext {
     }
 
     public void drawLine(Point startPoint, Point endPoint, Color color, int alpha) {
+        drawLine(startPoint.getX(), startPoint.getY(), startPoint.getZ(),
+                endPoint.getX(), endPoint.getY(), endPoint.getZ(), color, alpha);
+    }
+
+    public void drawLine(double startX, double startY, double startZ, double endX, double endY, double endZ, Color color, int alpha) {
         lineCount++;
 
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+
         lineBufferBuilder
-                .vertex((float) (startPoint.getX() - baseX),
-                        (float) (startPoint.getY() - baseY),
-                        (float) (startPoint.getZ() - baseZ))
-                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-        ;
+                .vertex((float) (startX - baseX),
+                        (float) (startY - baseY),
+                        (float) (startZ - baseZ))
+                .color(red, green, blue, alpha);
         lineBufferBuilder
-                .vertex((float) (endPoint.getX() - baseX),
-                        (float) (endPoint.getY() - baseY),
-                        (float) (endPoint.getZ() - baseZ))
-                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-        ;
+                .vertex((float) (endX - baseX),
+                        (float) (endY - baseY),
+                        (float) (endZ - baseZ))
+                .color(red, green, blue, alpha);
     }
 
     public void endBatch() {

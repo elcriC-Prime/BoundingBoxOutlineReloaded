@@ -43,6 +43,7 @@ public class BiomeBorderProvider implements IBoundingBoxProvider<BoundingBoxBiom
             if (sectionPos == null) break;
 
             final ClientWorld world = MinecraftClient.getInstance().world;
+            if (world == null) return false;
             ChunkPos pos = sectionPos.toChunkPos();
 
             if (!world.isChunkLoaded(pos.x, pos.z) ||
@@ -99,10 +100,50 @@ public class BiomeBorderProvider implements IBoundingBoxProvider<BoundingBoxBiom
         }
 
         private void findBoxesFromBlockState(int chunkStartX, int chunkStartY, int chunkStartZ) {
-            for (int x = 0; x < 16; x++) {
-                for (int y = 0; y < 16; y++) {
-                    for (int z = 0; z < 16; z++) {
-                        findBoxFromBlockState(chunkStartX + x, chunkStartY + y, chunkStartZ + z);
+            final ClientWorld world = MinecraftClient.getInstance().world;
+            if (world == null) return;
+            final var biomeRegistry = world.getRegistryManager().get(net.minecraft.registry.RegistryKeys.BIOME);
+            final int[] biomeIds = new int[18 * 18 * 18];
+            final BlockPos.Mutable mutablePos = new BlockPos.Mutable();
+
+            for (int y = -1; y <= 16; y++) {
+                int wy = chunkStartY + y;
+                int yOffset = (y + 1) * 18 * 18;
+                for (int z = -1; z <= 16; z++) {
+                    int wz = chunkStartZ + z;
+                    int zOffset = yOffset + (z + 1) * 18;
+                    for (int x = -1; x <= 16; x++) {
+                        mutablePos.set(chunkStartX + x, wy, wz);
+                        biomeIds[zOffset + (x + 1)] = biomeRegistry.getRawId(world.getBiome(mutablePos).value());
+                    }
+                }
+            }
+
+            for (int y = 0; y < 16; y++) {
+                int wy = chunkStartY + y;
+                int yIdx = (y + 1) * 18 * 18;
+                for (int z = 0; z < 16; z++) {
+                    int wz = chunkStartZ + z;
+                    int zIdx = yIdx + (z + 1) * 18;
+                    for (int x = 0; x < 16; x++) {
+                        int wx = chunkStartX + x;
+                        int idx = zIdx + (x + 1);
+                        int currentBiomeId = biomeIds[idx];
+                        boolean north = biomeIds[idx - 18] != currentBiomeId;
+                        boolean south = biomeIds[idx + 18] != currentBiomeId;
+                        boolean west = biomeIds[idx - 1] != currentBiomeId;
+                        boolean east = biomeIds[idx + 1] != currentBiomeId;
+                        boolean up = biomeIds[idx + 18 * 18] != currentBiomeId;
+                        boolean down = biomeIds[idx - 18 * 18] != currentBiomeId;
+
+                        if (north || east || south || west || up || down) {
+                            boxes[getIndex(wx, wy, wz)] = new BoundingBoxBiomeBorder(
+                                    new Coords(wx, wy, wz),
+                                    north, east, south, west, up, down,
+                                    currentBiomeId);
+                        } else {
+                            boxes[getIndex(wx, wy, wz)] = null;
+                        }
                     }
                 }
             }
@@ -149,6 +190,7 @@ public class BiomeBorderProvider implements IBoundingBoxProvider<BoundingBoxBiom
 //        });
         EventBus.subscribe(ClientWorldUpdateTracker.ChunkUnloadEvent.class, event -> {
             final ClientWorld world = MinecraftClient.getInstance().world;
+            if (world == null) return;
             synchronized (queuedUpdateChunks) {
                 for (int y = world.getBottomSectionCoord(); y < world.getTopSectionCoord(); y++) {
                     queuedUpdateChunks.remove(ChunkSectionPos.from(event.x(), y, event.z()));

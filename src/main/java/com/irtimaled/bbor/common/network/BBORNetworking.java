@@ -33,11 +33,11 @@ public class BBORNetworking {
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1.0.0").optional();
 
-        registrar.playBidirectional(INITIALIZE_ID, BBORCustomPayload.codec(INITIALIZE_ID.id()), BBORNetworking::handlePayload);
-        registrar.playBidirectional(ADD_BOUNDING_BOX_ID, BBORCustomPayload.codec(ADD_BOUNDING_BOX_ID.id()), BBORNetworking::handlePayload);
-        registrar.playBidirectional(STRUCTURE_LIST_SYNC_ID, BBORCustomPayload.codec(STRUCTURE_LIST_SYNC_ID.id()), BBORNetworking::handlePayload);
-        registrar.playBidirectional(SERVUX_STRUCTURES_ID, BBORCustomPayload.codec(SERVUX_STRUCTURES_ID.id()), BBORNetworking::handlePayload);
-        registrar.playBidirectional(SUBSCRIBE_ID, BBORCustomPayload.codec(SUBSCRIBE_ID.id()), BBORNetworking::handlePayload);
+        registrar.playToClient(INITIALIZE_ID, BBORCustomPayload.codec(INITIALIZE_ID.id()), BBORNetworking::handlePayload);
+        registrar.playToClient(ADD_BOUNDING_BOX_ID, BBORCustomPayload.codec(ADD_BOUNDING_BOX_ID.id()), BBORNetworking::handlePayload);
+        registrar.playToClient(STRUCTURE_LIST_SYNC_ID, BBORCustomPayload.codec(STRUCTURE_LIST_SYNC_ID.id()), BBORNetworking::handlePayload);
+        registrar.playToClient(SERVUX_STRUCTURES_ID, BBORCustomPayload.codec(SERVUX_STRUCTURES_ID.id()), BBORNetworking::handlePayload);
+        registrar.playToServer(SUBSCRIBE_ID, BBORCustomPayload.codec(SUBSCRIBE_ID.id()), BBORNetworking::handlePayload);
     }
 
     private static void handlePayload(BBORCustomPayload payload, IPayloadContext context) {

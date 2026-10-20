@@ -88,10 +88,11 @@ public class SpawnableBlocksProvider implements IBoundingBoxProvider<BoundingBox
             box.getBlockYs().clear();
 
             // I have no idea how to properly use isSpawnable so i copied this
-            BlockState upperBlockState = world.getBlockState(new BlockPos(x, world.getBottomY(), z));
+            BlockPos.Mutable pos = new BlockPos.Mutable(x, world.getBottomY(), z);
+            BlockState upperBlockState = world.getBlockState(pos);
             for (int y = world.getBottomY() + 1; y < maxY; y++) {
                 BlockState spawnBlockState = upperBlockState;
-                BlockPos pos = new BlockPos(x, y, z);
+                pos.setY(y);
                 upperBlockState = world.getBlockState(pos);
                 if (SpawnableBlocksHelper.isSpawnable(world, pos, spawnBlockState, upperBlockState)) {
                     box.getBlockYs().add(y);

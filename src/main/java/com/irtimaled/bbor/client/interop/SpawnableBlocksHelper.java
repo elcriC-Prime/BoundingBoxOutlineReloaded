@@ -26,6 +26,9 @@ public class SpawnableBlocksHelper {
 //    private static final EntityType entityType = EntityType.Builder.create(SpawnGroup.MONSTER)
 //            .setDimensions(0f, 0f).disableSaving().build(null);
 
+    private static final Identifier MUSHROOM_FIELDS_ID = Identifier.ofVanilla("mushroom_fields");
+    private static final Identifier DEEP_DARK_ID = Identifier.ofVanilla("deep_dark");
+
     public static void findSpawnableBlocks(Coords coords, int width, int height, BlockProcessor blockProcessor) {
         int blockX = coords.getX();
         int minX = blockX - width;
@@ -35,20 +38,23 @@ public class SpawnableBlocksHelper {
         int minZ = blockZ - width;
         int maxZ = blockZ + width + 1;
 
-        int blockY = coords.getY();
-        int minY = Math.max(1, blockY - height);
-        int maxY = Math.min(255, blockY + height);
-
         World world = MinecraftClient.getInstance().world;
+        if (world == null) return;
+        int blockY = coords.getY();
+        int minY = Math.max(world.getBottomY() + 1, blockY - height);
+        int maxY = Math.min(world.getTopY() - 1, blockY + height);
+
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int x = minX; x < maxX; x++) {
             for (int z = minZ; z < maxZ; z++) {
-                BlockState upperBlockState = world.getBlockState(new BlockPos(x, minY - 1, z));
-                for (int y = Math.max(1, minY); y < maxY; y++) {
+                pos.set(x, minY - 1, z);
+                BlockState upperBlockState = world.getBlockState(pos);
+                for (int y = minY; y < maxY; y++) {
                     BlockState spawnBlockState = upperBlockState;
-                    BlockPos pos = new BlockPos(x, y, z);
+                    pos.set(x, y, z);
                     upperBlockState = world.getBlockState(pos);
                     if (isSpawnable(world, pos, spawnBlockState, upperBlockState)) {
-                        blockProcessor.process(pos);
+                        blockProcessor.process(pos.toImmutable());
                     }
                 }
             }
@@ -76,10 +82,9 @@ public class SpawnableBlocksHelper {
                 }
                 return false;
             });
-            final Identifier id = biomeRegistryEntry.getKey().get().getValue();
+            final Identifier id = biomeRegistryEntry.getKey().map(net.minecraft.registry.RegistryKey::getValue).orElse(null);
             return spawnBlockState.allowsSpawning(world, pos.down(), isNether ? EntityType.ZOMBIFIED_PIGLIN : EntityType.ZOMBIE) &&
-                    (id == null || !id.equals(Identifier.ofVanilla("mushroom_fields")) &&
-                            !id.equals(Identifier.ofVanilla("deep_dark")));
+                    (id == null || (!id.equals(MUSHROOM_FIELDS_ID) && !id.equals(DEEP_DARK_ID)));
         }
         return false;
     }

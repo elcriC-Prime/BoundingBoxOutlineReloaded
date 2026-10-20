@@ -32,7 +32,6 @@ public class SpawningSphereRenderer extends AbstractRenderer<BoundingBoxSpawning
 //                            I18n.translate("bbor.renderer.spawningSphere.none") :
 //                            String.format("%,d", spawnableSpacesCount));
 //        }
-        renderSphere(ctx, point, BoundingBoxSpawningSphere.SAFE_RADIUS, safeAreaColor);
 
         if (ConfigManager.renderAFKSpawnableBlocks.get() && boundingBox.isWithinSphere(Player.getPoint())) {
             renderSpawnableSpaces(ctx, boundingBox);

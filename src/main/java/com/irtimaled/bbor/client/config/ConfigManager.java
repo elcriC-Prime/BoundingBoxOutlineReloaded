@@ -227,7 +227,6 @@ public class ConfigManager {
         drawSpawnableBlocks = setup(config, "spawnableBlocks", "drawSpawnableBlocks", false, "If set to true boxes to show spawnable blocks will be drawn.");
         spawnableBlocksRenderDistance = setup(config, "spawnableBlocks", "spawnableBlocksRenderDistance", 2, "The distance from the player where spawnable blocks will be drawn in X and Z axis.");
         spawnableBlocksSafeLight = setup(config, "spawnableBlocks", "spawnableBlocksSafeLight", 0, "The light level to check which block is safe.");
-        spawnableBlocksSafeLight = setup(config, "spawnableBlocks", "spawnableBlocksSafeLight", 0, "The light level to check which block is safe.");
 
         colorWorldSpawn = setup(config, "colors", "colorWorldSpawn", HexColor.from("#ff0000"), "Color of world spawn and spawn chunks bounding boxes.");
         colorLazySpawnChunks = setup(config, "colors", "colorLazySpawnChunks", HexColor.from("#ff0000"), "Color of lazy spawn chunks bounding boxes.");

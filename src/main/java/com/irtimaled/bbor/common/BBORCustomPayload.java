@@ -6,7 +6,12 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public record BBORCustomPayload(PacketByteBuf byteBuf, Identifier id) implements CustomPayload {
+
+    private static final Map<Identifier, Id<BBORCustomPayload>> IDS = new ConcurrentHashMap<>();
 
     public BBORCustomPayload(Identifier identifier, PacketByteBuf buf) {
         this(buf != null ? new PacketByteBuf(buf.copy()) : new PacketByteBuf(Unpooled.buffer()), identifier);
@@ -30,6 +35,6 @@ public record BBORCustomPayload(PacketByteBuf byteBuf, Identifier id) implements
 
     @Override
     public Id<? extends CustomPayload> getId() {
-        return new Id<>(id);
+        return IDS.computeIfAbsent(id, Id::new);
     }
 }

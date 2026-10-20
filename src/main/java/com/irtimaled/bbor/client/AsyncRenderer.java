@@ -92,8 +92,10 @@ public class AsyncRenderer {
                 final RenderingContext ctx = asyncContexts[i];
                 draw(matrixStack, modelViewMatrix, projectionMatrix, camera, ctx);
 
-                buildSyncs(DEFAULT);
-                draw(matrixStack, modelViewMatrix, projectionMatrix, camera, DEFAULT);
+                if (!syncRenders.isEmpty()) {
+                    buildSyncs(DEFAULT);
+                    draw(matrixStack, modelViewMatrix, projectionMatrix, camera, DEFAULT);
+                }
 
                 lastCtx = ctx;
                 defaultBuilt = false;

@@ -34,8 +34,8 @@ public class StructureProcessor {
 
     private final BoundingBoxCache boundingBoxCache;
 
-    private void addStructures(BoundingBoxType type, StructureStart structureStart) {
-        if (structureStart == null || !structureStart.hasChildren() || structureStart.getChildren().isEmpty()) return;
+    private boolean addStructures(BoundingBoxType type, StructureStart structureStart) {
+        if (structureStart == null || !structureStart.hasChildren() || structureStart.getChildren().isEmpty()) return false;
 
         BlockBox bb = null;
         try {
@@ -48,16 +48,17 @@ public class StructureProcessor {
             } catch (Throwable ignored) {
             }
         }
-        if (bb == null) return;
+        if (bb == null) return false;
 
         AbstractBoundingBox boundingBox = buildStructure(bb, type);
-        if (boundingBoxCache.isCached(boundingBox)) return;
+        if (boundingBoxCache.isCached(boundingBox)) return false;
 
         Set<AbstractBoundingBox> structureBoundingBoxes = new HashSet<>();
         for (StructurePiece structureComponent : structureStart.getChildren()) {
             structureBoundingBoxes.add(buildStructure(structureComponent.getBoundingBox(), type));
         }
         boundingBoxCache.addBoundingBoxes(boundingBox, structureBoundingBoxes);
+        return true;
     }
 
     private AbstractBoundingBox buildStructure(BlockBox bb, BoundingBoxType type) {
@@ -66,12 +67,14 @@ public class StructureProcessor {
         return BoundingBoxCuboid.from(min, max, type);
     }
 
-    void process(Map<String, StructureStart> structures) {
+    boolean process(Map<String, StructureStart> structures) {
+        boolean added = false;
         for (Map.Entry<String, StructureStart> entry : structures.entrySet()) {
             final BoundingBoxType type = supportedStructures.get("structure:" + entry.getKey());
             if (type != null) {
-                addStructures(type, entry.getValue());
+                added |= addStructures(type, entry.getValue());
             }
         }
+        return added;
     }
 }

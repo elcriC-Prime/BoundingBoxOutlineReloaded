@@ -48,15 +48,15 @@ public class BoundingBoxLine extends AbstractBoundingBox {
 
     @Override
     public Boolean intersectsBounds(int minX, int minZ, int maxX, int maxZ) {
-        boolean minXWithinBounds = isBetween(minPoint.getX(), minX, maxX);
-        boolean maxXWithinBounds = isBetween(maxPoint.getX(), minX, maxX);
-        boolean minZWithinBounds = isBetween(minPoint.getZ(), minZ, maxZ);
-        boolean maxZWithinBounds = isBetween(maxPoint.getZ(), minZ, maxZ);
+        double boxMinX = Math.min(minPoint.getX(), maxPoint.getX());
+        double boxMaxX = Math.max(minPoint.getX(), maxPoint.getX());
+        double boxMinZ = Math.min(minPoint.getZ(), maxPoint.getZ());
+        double boxMaxZ = Math.max(minPoint.getZ(), maxPoint.getZ());
 
-        return (minXWithinBounds && minZWithinBounds) ||
-                (maxXWithinBounds && maxZWithinBounds) ||
-                (minXWithinBounds && maxZWithinBounds) ||
-                (maxXWithinBounds && minZWithinBounds);
+        return boxMaxX >= minX &&
+                boxMaxZ >= minZ &&
+                boxMinX <= maxX &&
+                boxMinZ <= maxZ;
     }
 
     @Override
